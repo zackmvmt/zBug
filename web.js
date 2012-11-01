@@ -9,7 +9,11 @@ var db = server.use('test01');
 app.get('/', function(req, res) {
 	
 	//var result = server + ' - ' + db + ' - ';
-	res.send(JSON.stringify(server));
+	//res.send(JSON.stringify(server));
+	
+	nano.db.list(function(err, body) {
+		res.send(JSON.stringify(body));
+	});
 	
 });
 
