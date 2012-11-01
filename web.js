@@ -7,11 +7,7 @@ var restler = require('restler');
 
 app.get('/', function(req, res) {
 	
-	var result = '' + process;
-	
-	console.log('test');
-	
-	res.send(result);
+	res.send('Hello World');
 	
 });
 
