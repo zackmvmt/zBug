@@ -6,8 +6,8 @@ var db = server.use('app8736785.heroku/test01');
 
 app.get('/', function(req, res) {
 	
-	var result = server + ' - ' + db + ' - ';
-	res.send(result);
+	//var result = server + ' - ' + db + ' - ';
+	res.send(JSON.stringify(db));
 	
 });
 
