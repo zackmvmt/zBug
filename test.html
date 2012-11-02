@@ -19,7 +19,7 @@
 				
 				window.User_Collection = Backbone.Collection.extend({
 					model: User,
-					url: 'http://localhost:8000/users'
+					url: 'http://localhost:5000/users'
 				});
 				
 				window.List = Backbone.View.extend({
@@ -33,7 +33,7 @@
 					},
 					render: function() {
 						_.each(this.collection.models, function(user) {
-							console.log(user);
+							$(this.el).append('<li>' + user.get('value')['name'] + '</li>');
 						}, this);
 						return this;
 					}

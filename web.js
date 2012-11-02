@@ -1,10 +1,19 @@
 // SERVER SETUP
 var dev = process.env.PORT ? false : true;
-var port = process.env.PORT || 8000;
+var port = process.env.PORT || 5000;
 
 // REST API
 var express = require('express');
 var app = express.createServer();
+
+// CONFIGURE THE API
+app.configure(function () {
+	app.use(function(req, res, next) {
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	next();
+	});
+});
 
 // DATABASE PERSISTENCE
 var server = require('nano')(dev ? 'http://127.0.0.1:5984/' : process.env.CLOUDANT_URL);
