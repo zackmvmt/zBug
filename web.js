@@ -1,17 +1,19 @@
+// SERVER SETUP
 var dev = process.env.PORT ? false : true;
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 8000;
 
+// REST API
 var express = require('express');
 var app = express.createServer();
 
+// DATABASE PERSISTENCE
 var server = require('nano')(dev ? 'http://127.0.0.1:5984/' : process.env.CLOUDANT_URL);
 var db = server.use('test01');
 
-app.get('/', function(req, res) {
-	
+// GET ROUTES
+app.get('/users', function(req, res) {
 	var docs = [];
-	
-	db.list(function(err, body) {
+	db.view('users', 'all', function(err, body) {
 		if (!err) {
 			body.rows.forEach(function(doc) {
 				docs.push(doc);
@@ -19,7 +21,8 @@ app.get('/', function(req, res) {
 			res.send(JSON.stringify(docs));
 		}
 	});
-	
 });
 
+// START THE SERVER
 app.listen(port);
+console.log('app running on port', port);
