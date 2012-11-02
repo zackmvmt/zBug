@@ -4,7 +4,7 @@ $(function() {
 	
 	window.User_Collection = Backbone.Collection.extend({
 		model: User,
-		url: 'http://localhost:5000/users'
+		url: Global.BaseUrl + '/users'
 	});
 	
 	window.List = Backbone.View.extend({

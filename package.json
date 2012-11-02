@@ -3,7 +3,8 @@
 	"version": "0.0.1",
 	"dependencies": {
 		"express": "2.5.x",
-		"nano": "3.3.x"
+		"nano": "3.3.x",
+		"jade": "1.1.x"
 	},
 	"engines": {
 		"node": "0.8.x",

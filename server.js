@@ -24,7 +24,7 @@ var db = server.use('test01');
 
 // LOAD THE FRONT-END
 app.get('/', function(req, res) {
-	res.render('index.jade');
+	res.render('index.jade', { dev: dev });
 });
 
 // GET ROUTES
