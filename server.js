@@ -2,25 +2,71 @@
 var dev = process.env.PORT ? false : true;
 var port = process.env.PORT || 5000;
 
+
+// DATABASE PERSISTENCE
+var server = require('nano')(dev ? 'http://127.0.0.1:5984/' : process.env.CLOUDANT_URL);
+var db = server.use('test01');
+
+
 // REST API
 var express = require('express');
 var app = express.createServer();
+
+
+// AUTHENTICATION
+var crypto = require('crypto');
+function checkAuth(req, res, next) {
+	if (!req.session || !req.session.user_id) {
+		res.render('login.jade', { dev: dev });
+	} else {
+		next();
+	}
+}
+
 
 // CONFIGURE THE API
 app.configure(function () {
 	app.use(express.static(__dirname + '/public'));
 	app.set('views', __dirname + '/public');
 	app.set('view options', { layout: false });
+	app.use(express.cookieParser()); 
+	app.use(express.session({ secret: 'tacos' }));
 });
 
-// DATABASE PERSISTENCE
-var server = require('nano')(dev ? 'http://127.0.0.1:5984/' : process.env.CLOUDANT_URL);
-var db = server.use('test01');
 
 // LOAD THE FRONT-END
-app.get('/', function(req, res) {
+app.get('/', checkAuth, function(req, res) {
 	res.render('index.jade', { dev: dev });
 });
+
+
+// LOGIN SCREEN AND METHODS
+// render the login page
+app.get('/login', function(req, res) {
+	res.render('login.jade', { dev: dev });
+});
+// login using credentials
+app.post('/login', express.bodyParser(), function(req, res) {
+	if (req.body && req.body.email && req.body.pass) {
+		db.view('users', 'all', { keys: [req.body.email] }, function(err, body) {
+			if (!err) {
+				var pass = crypto.createHash('md5').update(req.body.pass).digest("hex");
+				if (body.rows.length > 0) {
+					if (body.rows[0].value.pass == pass) {
+						req.session.user_id = body.rows[0].id;
+						res.send({ status: 'success', body: '' });
+					} else { res.send({ status:'error', body: 'the password was not correct' }); }
+				} else { res.send({ status: 'error', body: 'the user does not exist' }); }
+			} else { res.send({ status:'error', body: 'an issue occured with the lookup' }); }
+		});
+	} else { res.send({ status:'error', body: 'not all of the necessary information was provided' }); }
+});
+// log out the current user
+app.post('/logout', function(req, res) {
+	req.session.destroy();
+	res.end();
+});
+
 
 // GET ROUTES
 app.get('/users', function(req, res) {
@@ -34,6 +80,7 @@ app.get('/users', function(req, res) {
 		}
 	});
 });
+
 
 // START THE SERVER
 app.listen(port);

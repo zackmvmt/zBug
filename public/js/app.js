@@ -25,5 +25,11 @@ $(function() {
 	});
 	
 	$.test = new List();
+	
+	$('#logout').click(function() {
+		$.post(Global.BaseUrl + '/logout', function(data) {
+			window.location.reload();
+		});
+	});
 
 });
