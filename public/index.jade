@@ -8,7 +8,40 @@ html(lang='en')
 		script(type='text/javascript')
 			var Global = [];
 			Global.BaseUrl = (#{dev}) ? 'http://localhost:5000' : '';
-		script(type='text/javascript', src='js/app.js')
+		script(type='text/javascript', src='scripts/lib/LAB.min.js')
+		script(type='text/javascript')	
+			var App = {
+				Model: {},
+				View: {},
+				Collection: {},
+				Controller: {},
+				debug: false
+			};
+			$LAB
+				.script('scripts/lib/jquery-1.6.4.min.js')
+				.script('scripts/lib/jquery-ui-1.8.16.custom.min.js')
+				.script('scripts/lib/underscore-1.1.7.min.js')
+				.script('scripts/lib/backbone.js')
+				.script('scripts/jscore/backbone-ext.js')
+				.script('scripts/jscore/creatable.1.5.js')
+				.script('scripts/jscore/creatable-ext.js')
+				.script('scripts/jscore/creatable-array-ext.1.0.js')
+				.script('scripts/jscore/jquery.gather.js')
+				.script('scripts/jscore/rjs.2.5.js')
+				.script('scripts/jscore/rjs.2.3-proto.js')
+				.script('scripts/jscore/rjformat.1.0.js')
+				.script('scripts/jscore/underscore-functional.js')
+				.script('scripts/jscore/underscore-proto.js')
+				// collections
+				.script('scripts/collections/bug.collection.js')
+				// views
+				.script('scripts/views/header.view.js')
+				.script('scripts/views/content.view.js')
+				.script('scripts/views/list.view.js')
+				.script('scripts/views/dashboard.view.js')
+				// router
+				.script('scripts/controller.js')
+		link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Quicksand:300, 400', type='text/css')
+		link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Open+Sans', type='text/css')
+		link(rel='stylesheet', href='css/app.css', type='text/css')
 	body
-		ul#test
-		#logout logout

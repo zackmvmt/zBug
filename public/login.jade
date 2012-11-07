@@ -6,10 +6,21 @@ html(lang='en')
 		script(type='text/javascript')
 			var Global = [];
 			Global.BaseUrl = (#{dev}) ? 'http://localhost:5000' : '';
-		script(type='text/javascript', src='js/login.js')
+		script(type='text/javascript', src='scripts/login.js')
+		link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Quicksand:300, 400', type='text/css')
+		link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Open+Sans', type='text/css')
+		link(rel='stylesheet', href='css/login.css', type='text/css')
 	body
-		label Email
-		input#email(type='text')
-		label Password
-		input#pass(type='password')
-		div#submit submit
+		.panel
+			h2 zBug
+			#divider
+				#one.blip
+				#two.blip
+				#three.blip
+			label Email
+			input#email(type='text', value='zack@movementstrategy.com')
+			.clear
+			label Password
+			input#pass(type='password', value='Movement456')
+			.clear
+			div#submit submit

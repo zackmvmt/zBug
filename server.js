@@ -25,7 +25,9 @@ function checkAuth(req, res, next) {
 
 
 // CONFIGURE THE API
+var stylus = require('stylus');
 app.configure(function () {
+	app.use(stylus.middleware({src: __dirname + '/public'}));
 	app.use(express.static(__dirname + '/public'));
 	app.set('views', __dirname + '/public');
 	app.set('view options', { layout: false });
@@ -69,6 +71,7 @@ app.post('/logout', function(req, res) {
 
 
 // GET ROUTES
+// get all the users
 app.get('/users', function(req, res) {
 	var docs = [];
 	db.view('users', 'all', function(err, body) {
@@ -80,6 +83,18 @@ app.get('/users', function(req, res) {
 		}
 	});
 });
+// get all the bugs
+app.get('/bugs', function(req, res) {
+	var docs = [];
+	db.view('bugs', 'all', function(err, body) {
+		if (!err) {
+			body.rows.forEach(function(doc) {
+				docs.push(doc);
+			});
+			res.send(JSON.stringify(docs));
+		} else { re.send({ status: 'error', body: 'an error occured with the lookup' }); }
+	});
+})
 
 
 // START THE SERVER
