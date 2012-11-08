@@ -2,6 +2,10 @@ App.View.Header = Backbone.View.extend({
 	
 	className: 'header',
 	
+	events: {
+		'click ul.nav li.one': 'logout'
+	},
+	
 	build: function() {
 		
 		return ['fragment', [
@@ -22,6 +26,12 @@ App.View.Header = Backbone.View.extend({
 		
 		]];
 		
+	},
+	
+	logout: function() {
+		$.post(Global.BaseUrl + '/logout', function(data) {
+			window.location.reload();
+		});
 	}
 	
 });

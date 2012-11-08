@@ -1,0 +1,1 @@
+App.Model.Bug = Backbone.Model.extend();

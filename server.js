@@ -89,9 +89,13 @@ app.get('/bugs', function(req, res) {
 	db.view('bugs', 'all', function(err, body) {
 		if (!err) {
 			body.rows.forEach(function(doc) {
-				docs.push(doc);
+				var temp = doc.value;
+				temp.id = doc.value._id;
+				delete temp._id;
+				delete temp._rev;
+				docs.push(temp);
 			});
-			res.send(JSON.stringify(docs));
+			res.send(docs);
 		} else { re.send({ status: 'error', body: 'an error occured with the lookup' }); }
 	});
 })

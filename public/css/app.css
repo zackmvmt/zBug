@@ -4,6 +4,9 @@ body {
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
 }
+.clear {
+  clear: both;
+}
 .app {
   width: 800px;
   margin: auto;
@@ -14,6 +17,12 @@ h2 {
   font-family: 'Quicksand', sans-serif;
   margin: 0;
   padding: 0;
+}
+input {
+  border: 1px solid #ccc;
+  outline: none !important;
+  font-size: 12px;
+  padding: 3px;
 }
 .divider {
   width: 100%;
@@ -34,6 +43,41 @@ h2 {
 }
 .divider .blip.tre {
   background-color: #99cc14;
+}
+table.grid {
+  width: 100%;
+  border-spacing: 0;
+}
+table.grid th {
+  font-weight: 400;
+  text-align: left;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 10px;
+  color: #ccc;
+}
+table.grid tbody tr {
+  cursor: pointer;
+}
+table.grid td {
+  padding: 5px 0;
+  border-bottom: 1px solid #e5e5e5;
+  position: relative;
+}
+table.grid td .indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 55px;
+}
+table.grid td .indicator.status_fixed {
+  background-color: #99cc14;
+}
+table.grid td .indicator.status_open {
+  background-color: #ff1172;
+}
+table.grid td .indicator.status_regress {
+  background-color: #008cff;
 }
 .header {
   position: relative;
@@ -61,4 +105,24 @@ h2 {
 }
 .header ul.nav li.tre:hover {
   color: #99cc14;
+}
+.list .list_sort {
+  margin-bottom: 20px;
+  height: 40px;
+}
+.list .list_sort label {
+  float: left;
+  width: 70px;
+}
+.list .list_sort select {
+  float: left;
+  width: 90px;
+  margin-right: 20px;
+  outline: none !important;
+}
+.list .list_sort .search {
+  float: right;
+  margin-top: 0;
+  width: 220px;
+  text-align: right;
 }

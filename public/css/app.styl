@@ -4,6 +4,9 @@ body
 	font-family 'Open Sans', sans-serif
 	font-size 14px
 	
+.clear
+	clear both
+	
 .app
 	width 800px
 	margin auto
@@ -14,6 +17,12 @@ h2
 	font-family 'Quicksand', sans-serif
 	margin 0
 	padding 0
+	
+input
+	border 1px solid #CCC
+	outline none !important
+	font-size 12px
+	padding 3px
 
 .divider
 	width 100%
@@ -29,8 +38,36 @@ h2
 		&.two
 			background-color #FF1172
 		&.tre
-			background-color #99CC14
-			
+			background-color #99CC14	
+
+table.grid
+	width 100%
+	border-spacing 0
+	th
+		font-weight 400
+		text-align left
+		border-bottom 1px solid #E5E5E5
+		padding-bottom 10px
+		color #CCC
+	tbody tr
+		cursor pointer
+	td
+		padding 5px 0
+		border-bottom 1px solid #E5E5E5
+		position relative
+		.indicator
+			position absolute
+			bottom 0
+			left 0
+			height 3px
+			width 55px
+			&.status_fixed
+				background-color #99CC14
+			&.status_open
+				background-color #FF1172
+			&.status_regress
+				background-color #008cff
+
 .header
 	position relative
 	margin-bottom 50px
@@ -55,3 +92,21 @@ h2
 			&.tre
 				&:hover
 					color #99CC14
+					
+.list
+	.list_sort
+		margin-bottom 20px
+		height 40px
+		label
+			float left
+			width 70px
+		select
+			float left
+			width 90px
+			margin-right 20px
+			outline none !important
+		.search
+			float right
+			margin-top 0
+			width 220px
+			text-align right
