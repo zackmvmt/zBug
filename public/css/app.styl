@@ -18,11 +18,14 @@ h2
 	margin 0
 	padding 0
 	
-input
+input, textarea
 	border 1px solid #CCC
 	outline none !important
 	font-size 12px
 	padding 3px
+	
+select
+	outline none !important
 
 .divider
 	width 100%
@@ -104,9 +107,80 @@ table.grid
 			float left
 			width 90px
 			margin-right 20px
-			outline none !important
 		.search
 			float right
 			margin-top 0
 			width 220px
 			text-align right
+			
+.edit
+	.back
+		color #CCC
+		margin-bottom 10px
+		cursor pointer
+		float left
+		&:hover
+			color #008cff
+	h2
+		margin-top 10px
+		margin-bottom 20px
+	input.status_title
+		margin-bottom 30px
+		width 79%
+		float left
+		font-weight 300
+		font-size 30px
+		font-family 'Quicksand', sans-serif
+		border none
+		&:hover
+			border 1px solid #CCC
+			margin-top: 0px
+			margin-left -1px
+	.edit_status
+		float right
+		width 15%
+		margin-left 5%
+		margin-top 20px
+	.field
+		float left
+		width 50%
+		label
+			float left
+			width 30%
+			margin-bottom 20px
+		select
+			width 30%
+	ol.steps
+		margin 0
+		margin-left 25px
+		padding 0
+		li
+			margin-bottom 10px
+	.add_step
+		width 80%
+		float left
+		margin-bottom 20px
+	.add
+		width 15%
+		margin-left 4%
+		float left
+		margin-top 3px
+		cursor pointer
+	textarea
+		width 100%
+		height 100px
+	ul.history
+		margin 0
+		padding 0
+		list-style none
+		li
+			margin-bottom 10px
+			.icon
+				width 40px
+				height 40px
+				background-color: rgba(0, 200, 250, 0.3);
+				float left
+			.desc
+				float left
+				margin-left 10px
+				margin-top 10px
