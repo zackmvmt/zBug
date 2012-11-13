@@ -34,7 +34,7 @@ app.configure(function () {
 	app.use(express.cookieParser()); 
 	app.use(express.session({ secret: 'tacos' }));
 });
-
+var u = require('underscore');
 
 // LOAD THE FRONT-END
 app.get('/', checkAuth, function(req, res) {
@@ -93,12 +93,26 @@ app.get('/bugs', function(req, res) {
 				temp.id = doc.value._id;
 				delete temp._id;
 				delete temp._rev;
+				temp.history = u.map(temp.history, function(h) { // add in the md5 hash
+					h.hash = crypto.createHash('md5').update(h.email).digest("hex");
+					return h;
+				});
 				docs.push(temp);
 			});
 			res.send(docs);
 		} else { re.send({ status: 'error', body: 'an error occured with the lookup' }); }
 	});
-})
+});
+
+
+// PUT ROUTES
+// update a specific bug
+app.put('/bugs/:id', express.bodyParser(), function(req, res) {
+	if (req.body) {
+		console.log('update bug', req.body);
+		res.end();
+	} else { res.send({ status:'error', body: 'not all of the necessary information was provided' }); }
+});
 
 
 // START THE SERVER

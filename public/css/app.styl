@@ -156,7 +156,7 @@ table.grid
 		padding 0
 		li
 			margin-bottom 10px
-	.add_step
+	.add_step, .add_comment
 		width 80%
 		float left
 		margin-bottom 20px
@@ -180,6 +180,28 @@ table.grid
 				height 40px
 				background-color: rgba(0, 200, 250, 0.3);
 				float left
+				position relative
+				img
+					width 40px
+					height 40px
+					position absolute
+					top 0
+					left 0
+					z-index 5
+				&:after
+					content ''
+					position absolute
+					bottom 0
+					left 0
+					height 4px
+					width 100%
+					z-index 10
+				&.open:after
+					background-color #FF1172
+				&.fixed:after
+					background-color #99CC14
+				&.regress:after
+					background-color #008cff
 			.desc
 				float left
 				margin-left 10px

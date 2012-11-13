@@ -182,7 +182,8 @@ table.grid td .indicator.status_regress {
 .edit ol.steps li {
   margin-bottom: 10px;
 }
-.edit .add_step {
+.edit .add_step,
+.edit .add_comment {
   width: 80%;
   float: left;
   margin-bottom: 20px;
@@ -211,6 +212,33 @@ table.grid td .indicator.status_regress {
   height: 40px;
   background-color: rgba(0,200,250,0.3);
   float: left;
+  position: relative;
+}
+.edit ul.history li .icon img {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+}
+.edit ul.history li .icon:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  z-index: 10;
+}
+.edit ul.history li .icon.open:after {
+  background-color: #ff1172;
+}
+.edit ul.history li .icon.fixed:after {
+  background-color: #99cc14;
+}
+.edit ul.history li .icon.regress:after {
+  background-color: #008cff;
 }
 .edit ul.history li .desc {
   float: left;

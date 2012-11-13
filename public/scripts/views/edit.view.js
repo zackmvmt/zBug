@@ -3,16 +3,16 @@ App.View.Edit = Backbone.View.extend({
 	className: 'edit',
 	
 	events: {
-		'click .back': 'back'
+		'click .back': 'back',
+		'click .test': 'submit'
 	},
 	
 	build: function() {
 		
-		console.log(this.model.toJSON());
-		
 		return ['fragment', [
 			
 			['.back', '< back'], ['.clear'],
+			['.test', 'test'],
 			
 			['input.status_title', { value: this.model.get('summary') } ],
 			['select.edit_status', { name: 'status' }, this.orderList('status', ['open', 'regress', 'fixed']).map(function(type) {
@@ -36,18 +36,18 @@ App.View.Edit = Backbone.View.extend({
 			['textarea', { name: 'notes' }, (this.model.get('notes')) ? this.model.get('notes') : null],
 			
 			['h2', 'Lifecycle'],
-			['ul.history', [
-				['li', [
-					['.icon.open'],
-					['.desc', 'Zack Sticklles discovered this bug'],
-					['.clear']
-				]],
-				['li', [
-					['.icon.open'],
-					['.desc', 'Zack Sticklles discovered this bug'],
+			['input.add_comment', { type: 'text', placeholder: 'comment...' }],
+			['.add', '+ add'],
+			['.clear'],
+			['ul.history', this.model.get('history').reverse().map(function(h) {
+				return ['li', [
+					['.icon', { 'class': (h.status) ? h.status : '' }, [
+						['img', { src: 'http://gravatar.com/avatar/' + h.hash }]
+					]],
+					['.desc', h.message],
 					['.clear']
 				]]
-			]]
+			})]
 		
 		]];
 		
@@ -76,6 +76,10 @@ App.View.Edit = Backbone.View.extend({
 	
 	back: function() {
 		this.trigger('back');
+	},
+	
+	submit: function() {
+		this.model.save();
 	}
 	
 });
