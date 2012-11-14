@@ -4,7 +4,11 @@ App.View.Edit = Backbone.View.extend({
 	
 	events: {
 		'click .back': 'back',
-		'click .test': 'submit'
+		'click .add_step_btn': 'addStep',
+		'click .add_comment_btn': 'addComment',
+		'keydown input': 'fieldUpdate',
+		'keydown textarea': 'submitDebounce',
+		'change select': 'submitDebounce'
 	},
 	
 	build: function() {
@@ -12,9 +16,8 @@ App.View.Edit = Backbone.View.extend({
 		return ['fragment', [
 			
 			['.back', '< back'], ['.clear'],
-			['.test', 'test'],
 			
-			['input.status_title', { value: this.model.get('summary') } ],
+			['input.status_title', { name: 'summary', value: this.model.get('summary') } ],
 			['select.edit_status', { name: 'status' }, this.orderList('status', ['open', 'regress', 'fixed']).map(function(type) {
 				return ['option', { value: type }, type.replace('_', ' ')];
 			}),],
@@ -28,7 +31,7 @@ App.View.Edit = Backbone.View.extend({
 				return ['li', step];
 			}) : null],
 			['input.add_step', { type: 'text', placeholder: 'add new step..' }],
-			['.add', '+ add'],
+			['.add.add_step_btn', '+ add'],
 			
 			['.clear'],
 			
@@ -37,7 +40,7 @@ App.View.Edit = Backbone.View.extend({
 			
 			['h2', 'Lifecycle'],
 			['input.add_comment', { type: 'text', placeholder: 'comment...' }],
-			['.add', '+ add'],
+			['.add.add_comment_btn', '+ add'],
 			['.clear'],
 			['ul.history', this.model.get('history').reverse().map(function(h) {
 				return ['li', [
@@ -78,8 +81,48 @@ App.View.Edit = Backbone.View.extend({
 		this.trigger('back');
 	},
 	
-	submit: function() {
-		this.model.save();
-	}
+	fieldUpdate: function(e) {
+		if (!$(e.target).hasClass('add_step') && !$(e.target).hasClass('add_comment')) {
+			this.submitDebounce();
+		}
+	},
+	
+	submit: function(e) {
+		var fields = $(this.el).gather();
+		console.log('save:', fields);
+		this.model.save(fields);
+	},
+	
+	addStep: function() {
+		var step = $(this.el).find('.add_step').val();
+		if (step != '') {
+			var steps = this.model.get('steps');
+			steps.push(step);
+			this.model.set({ steps: steps });
+			this.render();
+			this.submitDebounce();
+		} else {
+			alert('Please enter in a step to reproduce');
+		}
+	},
+	
+	addComment: function() {
+		var c = $(this.el).find('.add_comment').val();
+		if (c != '') {
+			var that = this;
+			var comment = { email: Global.UserEmail, status: null, message: c };
+			var hist = this.model.get('history');
+			hist.push(comment);
+			this.model.save({ history: hist }, { success: function() {
+				that.render();
+			} });
+		} else {
+			alert('Please enter your comment');
+		}
+	},
+	
+	submitDebounce: (function() {
+		this.submit();
+	}).debounce(1000),
 	
 });

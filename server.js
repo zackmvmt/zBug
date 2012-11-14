@@ -38,7 +38,11 @@ var u = require('underscore');
 
 // LOAD THE FRONT-END
 app.get('/', checkAuth, function(req, res) {
-	res.render('index.jade', { dev: dev });
+	res.render('index.jade', {
+		dev: dev,
+		user_email: req.session.user_email,
+		user_name: req.session.user_name,
+	});
 });
 
 
@@ -56,6 +60,8 @@ app.post('/login', express.bodyParser(), function(req, res) {
 				if (body.rows.length > 0) {
 					if (body.rows[0].value.pass == pass) {
 						req.session.user_id = body.rows[0].id;
+						req.session.user_email = body.rows[0].value.email;
+						req.session.user_name = body.rows[0].value.name;
 						res.send({ status: 'success', body: '' });
 					} else { res.send({ status:'error', body: 'the password was not correct' }); }
 				} else { res.send({ status: 'error', body: 'the user does not exist' }); }
@@ -92,7 +98,6 @@ app.get('/bugs', function(req, res) {
 				var temp = doc.value;
 				temp.id = doc.value._id;
 				delete temp._id;
-				delete temp._rev;
 				temp.history = u.map(temp.history, function(h) { // add in the md5 hash
 					h.hash = crypto.createHash('md5').update(h.email).digest("hex");
 					return h;
@@ -109,8 +114,18 @@ app.get('/bugs', function(req, res) {
 // update a specific bug
 app.put('/bugs/:id', express.bodyParser(), function(req, res) {
 	if (req.body) {
-		console.log('update bug', req.body);
-		res.end();
+		var doc = req.body;
+		doc._id = doc.id;
+		delete doc.id;
+		doc.history = u.map(doc.history, function(h) { // update all the hashes
+			h.hash = crypto.createHash('md5').update(h.email).digest("hex");
+			return h;
+		});
+		db.insert(doc, doc._id, function(err, body) {
+			if (!err) {
+				res.send({ _rev: body.rev, history: doc.history });
+			} else { re.send({ status: 'error', body: 'an error occured with the update' }); }
+		});	
 	} else { res.send({ status:'error', body: 'not all of the necessary information was provided' }); }
 });
 
