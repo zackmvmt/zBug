@@ -3,7 +3,8 @@ App.View.Header = Backbone.View.extend({
 	className: 'header',
 	
 	events: {
-		'click ul.nav li.one': 'logout'
+		'click ul.nav li.one': 'logout',
+		'click ul.nav li.tre': 'addNew'
 	},
 	
 	build: function() {
@@ -32,6 +33,10 @@ App.View.Header = Backbone.View.extend({
 		$.post(Global.BaseUrl + '/logout', function(data) {
 			window.location.reload();
 		});
+	},
+	
+	addNew: function() {
+		this.trigger('addNew');
 	}
 	
 });

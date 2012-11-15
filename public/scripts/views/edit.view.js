@@ -42,15 +42,22 @@ App.View.Edit = Backbone.View.extend({
 			['input.add_comment', { type: 'text', placeholder: 'comment...' }],
 			['.add.add_comment_btn', '+ add'],
 			['.clear'],
-			['ul.history', this.model.get('history').reverse().map(function(h) {
+			['ul.history', (this.model.get('history')) ? this.model.get('history')
+			.sortBy(function(h) {
+				return h.time;
+			})
+			.reverse()
+			.map(function(h) {
 				return ['li', [
 					['.icon', { 'class': (h.status) ? h.status : '' }, [
 						['img', { src: 'http://gravatar.com/avatar/' + h.hash }]
 					]],
-					['.desc', h.message],
+					['.desc', [
+						(h.status == 'comment') ? ['i', h.message] : h.message
+					]],
 					['.clear']
 				]]
-			})]
+			}) : null]
 		
 		]];
 		
@@ -109,8 +116,11 @@ App.View.Edit = Backbone.View.extend({
 	addComment: function() {
 		var c = $(this.el).find('.add_comment').val();
 		if (c != '') {
+			c = Global.UserName + ': ' + c;
 			var that = this;
-			var comment = { email: Global.UserEmail, status: null, message: c };
+			var d = new Date();
+			var t = d.getTime();
+			var comment = { email: Global.UserEmail, status: 'comment', message: c, time: t };
 			var hist = this.model.get('history');
 			hist.push(comment);
 			this.model.save({ history: hist }, { success: function() {
