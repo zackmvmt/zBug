@@ -42,6 +42,7 @@ app.get('/', checkAuth, function(req, res) {
 		dev: dev,
 		user_email: req.session.user_email,
 		user_name: req.session.user_name,
+		user_hash: crypto.createHash('md5').update(req.session.user_email).digest("hex")
 	});
 });
 
@@ -98,10 +99,6 @@ app.get('/bugs', function(req, res) {
 				var temp = doc.value;
 				temp.id = doc.value._id;
 				delete temp._id;
-				temp.history = u.map(temp.history, function(h) { // add in the md5 hash
-					h.hash = crypto.createHash('md5').update(h.email).digest("hex");
-					return h;
-				});
 				docs.push(temp);
 			});
 			res.send(docs);
@@ -117,15 +114,41 @@ app.put('/bugs/:id', express.bodyParser(), function(req, res) {
 		var doc = req.body;
 		doc._id = doc.id;
 		delete doc.id;
-		doc.history = u.map(doc.history, function(h) { // update all the hashes
-			h.hash = crypto.createHash('md5').update(h.email).digest("hex");
-			return h;
-		});
 		db.insert(doc, doc._id, function(err, body) {
 			if (!err) {
 				res.send({ _rev: body.rev, history: doc.history });
-			} else { re.send({ status: 'error', body: 'an error occured with the update' }); }
+			} else { res.send({ status: 'error', body: 'an error occured with the update', err: err }); }
 		});	
+	} else { res.send({ status:'error', body: 'not all of the necessary information was provided' }); }
+});
+
+
+// POST ROUTES
+// add a new bug
+app.post('/bugs', express.bodyParser(), function(req, res) {
+	if (req.body) {
+		var doc = req.body;
+		db.insert(doc, function(err, body) {
+			if (!err) {
+				res.send({ _rev: body.rev, id: body.id, history: doc.history });
+			} else { res.send({ status: 'error', body: 'an error occured with the update' }); }
+		});
+	} else { res.send({ status:'error', body: 'not all of the necessary information was provided' }); }
+});
+
+
+// DELETE ROUTES
+// removes a bug
+app.delete('/bugs/:id', express.bodyParser(), function(req, res) {
+	if (req.body) {
+		db.get(req.params.id, function(err, body) {
+			if (!err) {
+				db.destroy(req.params.id, body._rev, function(err, body) {
+					if (err) res.send({ status: 'error', body: 'an error occured with the delete' });
+				});
+			} else { res.send({ status: 'error', body: 'an error occured with the lookup' }); }
+		});
+		res.end();
 	} else { res.send({ status:'error', body: 'not all of the necessary information was provided' }); }
 });
 

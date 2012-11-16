@@ -4,6 +4,7 @@ App.View.Edit = Backbone.View.extend({
 	
 	events: {
 		'click .back': 'back',
+		'click .delete': 'deleteBug',
 		'click .add_step_btn': 'addStep',
 		'click .add_comment_btn': 'addComment',
 		'keydown input': 'fieldUpdate',
@@ -15,9 +16,9 @@ App.View.Edit = Backbone.View.extend({
 		
 		return ['fragment', [
 			
-			['.back', '< back'], ['.clear'],
+			['.back', '< back'], ['.delete', 'delete'], ['.clear'],
 			
-			['input.status_title', { name: 'summary', value: this.model.get('summary') } ],
+			['input.status_title', { name: 'summary', value: this.model.get('summary'), placeholder: 'bug summary...' } ],
 			['select.edit_status', { name: 'status' }, this.orderList('status', ['open', 'regress', 'fixed']).map(function(type) {
 				return ['option', { value: type }, type.replace('_', ' ')];
 			}),],
@@ -53,7 +54,7 @@ App.View.Edit = Backbone.View.extend({
 						['img', { src: 'http://gravatar.com/avatar/' + h.hash }]
 					]],
 					['.desc', [
-						(h.status == 'comment') ? ['i', h.message] : h.message
+						(h.status == 'comment') ? ['.comment', h.message] : h.message
 					]],
 					['.clear']
 				]]
@@ -85,7 +86,12 @@ App.View.Edit = Backbone.View.extend({
 	},
 	
 	back: function() {
-		this.trigger('back');
+		var fields = $(this.el).gather();
+		if (fields.summary == '' && this.model.id) {
+			alert('Please enter a bug summary at the top');
+		} else {
+			this.trigger('back');
+		}
 	},
 	
 	fieldUpdate: function(e) {
@@ -96,8 +102,9 @@ App.View.Edit = Backbone.View.extend({
 	
 	submit: function(e) {
 		var fields = $(this.el).gather();
-		console.log('save:', fields);
-		this.model.save(fields);
+		fields = this.statusHist(fields);
+		if (fields.summary != '')
+			this.model.save(fields);
 	},
 	
 	addStep: function() {
@@ -120,7 +127,7 @@ App.View.Edit = Backbone.View.extend({
 			var that = this;
 			var d = new Date();
 			var t = d.getTime();
-			var comment = { email: Global.UserEmail, status: 'comment', message: c, time: t };
+			var comment = { email: Global.UserEmail, status: 'comment', message: c, time: t, hash: Global.UserHash };
 			var hist = this.model.get('history');
 			hist.push(comment);
 			this.model.save({ history: hist }, { success: function() {
@@ -134,5 +141,39 @@ App.View.Edit = Backbone.View.extend({
 	submitDebounce: (function() {
 		this.submit();
 	}).debounce(1000),
+	
+	statusHist: function(fields) {
+		if (fields.status != this.model.get('status')) {
+			var message = Global.UserName + ' marked this bug as ' + fields.status;
+			var comment = {
+				email: Global.UserEmail,
+				status: fields.status,
+				message: message,
+				time: new Date().getTime(),
+				hash: Global.UserHash
+			}
+			var hist = this.model.get('history');
+			hist.push(comment);
+			fields.history = hist;
+			$(this.el).find('ul.history').prepend(create(
+				['li', [
+					['.icon', { 'class': fields.status }, [
+						['img', { src: 'http://gravatar.com/avatar/' + Global.UserHash }]
+					]],
+					['.desc', message],
+					['.clear']
+				]]
+			));
+		}
+		return fields;
+	},
+	
+	deleteBug: function() {
+		var c = confirm('Are you sure you want to delete this bug? This can not be undone.');
+		if (c) {
+			this.model.destroy();
+			this.back();
+		}
+	}
 	
 });

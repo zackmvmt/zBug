@@ -138,6 +138,14 @@ table.grid td .indicator.status_regress {
 .edit .back:hover {
   color: #008cff;
 }
+.edit .delete {
+  color: #ccc;
+  cursor: pointer;
+  float: right;
+}
+.edit .delete:hover {
+  color: #ff1172;
+}
 .edit h2 {
   margin-top: 10px;
   margin-bottom: 20px;
@@ -210,7 +218,6 @@ table.grid td .indicator.status_regress {
 .edit ul.history li .icon {
   width: 40px;
   height: 40px;
-  background-color: rgba(0,200,250,0.3);
   float: left;
   position: relative;
 }
@@ -244,4 +251,12 @@ table.grid td .indicator.status_regress {
   float: left;
   margin-left: 10px;
   margin-top: 10px;
+  color: #777;
+  float: right;
+  width: 750px;
+}
+.edit ul.history li .desc .comment {
+  margin-top: -5px;
+  font-size: 18px;
+  color: #000;
 }
