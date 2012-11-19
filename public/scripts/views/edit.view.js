@@ -16,6 +16,7 @@ App.View.Edit = Backbone.View.extend({
 		
 		return ['fragment', [
 			
+			['.update', 'updated'],
 			['.back', '< back'], ['.delete', 'delete'], ['.clear'],
 			
 			['input.status_title', { name: 'summary', value: this.model.get('summary'), placeholder: 'bug summary...' } ],
@@ -103,8 +104,10 @@ App.View.Edit = Backbone.View.extend({
 	submit: function(e) {
 		var fields = $(this.el).gather();
 		fields = this.statusHist(fields);
-		if (fields.summary != '')
+		if (fields.summary != '') {
+			$(this.el).find('.update').fadeIn('fast').delay(2000).fadeOut();
 			this.model.save(fields);
+		}
 	},
 	
 	addStep: function() {
