@@ -52,6 +52,7 @@ table.grid
 		border-bottom 1px solid #E5E5E5
 		padding-bottom 10px
 		color #CCC
+		cursor pointer
 	tbody tr
 		cursor pointer
 	td
@@ -97,19 +98,23 @@ table.grid
 					color #99CC14
 					
 .list
+	position relative
 	.list_sort
-		margin-bottom 20px
+		margin-bottom 40px
 		height 40px
 		label
 			float left
 			width 70px
+			margin-bottom 20px
 		select
 			float left
 			width 90px
 			margin-right 20px
+	.list_search
+		position absolute
+		top -3px
+		right 0
 		.search
-			float right
-			margin-top 0
 			width 220px
 			text-align right
 			

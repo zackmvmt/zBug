@@ -13,48 +13,56 @@ App.View.Content = Backbone.View.extend({
 	build: function() {
 	
 		var that = this;
-	
-		var fields = [
-			{ name: 'status', key: 'status', values: ['all', 'open', 'regress', 'fixed'] },
-			{ name: 'type', key: 'bug_type', values: ['all', 'copy', 'images', 'front_end', 'back_end', 'unknown'] },
-			{ name: 'severity', key: 'severity', values: [0, 1, 2, 3, 4, 5] }
-		];
 		
-		var sortsearch = ['.list_sort', [
-			['fragment', fields.map(function(field) {
-				return ['fragment', [
-					['label', field.name],
-					['select', { name: field.key }, field.values.map(function(opt) {
-						return ['option', { value: opt }, isNaN(opt) ? opt.replace('_', ' ') : opt]; 
-					})]
-				]];
-			})],
-			['input.search', { name: 'search', placeholder: 'search...' }]
-		]];
+		var sort = new App.View.Sort({
+			fields: [
+				{ name: 'project', key: 'project', values: ['all', 'zBug'] },
+				{ name: 'status', key: 'status', values: ['all', 'open', 'regress', 'fixed'] },
+				{ name: 'type', key: 'bug_type', values: ['all', 'copy', 'images', 'front_end', 'back_end', 'unknown'] },
+				{ name: 'severity', key: 'severity', values: ['all', 1, 2, 3, 4, 5] }
+			]
+		});
 		
-		return (this.display) ? this.display : ['.list', [
-			sortsearch,
-			new App.View.Grid({
-				collection: this.collection,
-				columns: [
-					{ name: 'status', label: 'Status' },
-					{ name: 'severity', label: 'Severity' },
-					{ name: 'bug_type', label: 'Type' },
-					{ name: 'summary', label: 'Summary' }
-				],
+		var search = new App.View.Search;
+		
+		var grid = new App.View.Grid({
+			collection: this.collection,
+			columns: [
+				{ name: 'status', label: 'Status' },
+				{ name: 'severity', label: 'Severity' },
+				{ name: 'bug_type', label: 'Type' },
+				{ name: 'summary', label: 'Summary' }
+			],
+		})
+		.bind('rowClick', function(e){
+			var displayModel = e[0];
+			that.display = new App.View.Edit({
+				model: displayModel
 			})
-			.bind('rowClick', function(e){
-				var displayModel = e[0];
-				that.display = new App.View.Edit({
-					model: displayModel
-				})
-				.bind('back', function() {
-					that.display = null;
-					that.render();
-				});
+			.bind('back', function() {
+				that.display = null;
 				that.render();
-			})
-		]];
+			});
+			that.render();
+		})
+		.bind('updateGrid', function(fields) {
+			var that = this;
+			this.collection.fetch({ success: function() {
+				if (fields.length > 0) {
+					var models = that.collection.models.filter(function(model) {
+						return fields.map(function(field) {
+							return model.get(field.field) == field.value;
+						}).contains(false) ? false : true;
+					});
+					that.collection.reset(models);
+				}
+				that.render();
+			} });
+		});
+		
+		sort.forward(['updateGrid'], grid);
+		
+		return (this.display) ? this.display : ['.list', [sort, search, grid]];
 		
 	}
 	

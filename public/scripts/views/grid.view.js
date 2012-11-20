@@ -45,7 +45,7 @@ App.View.Grid = Backbone.View.extend({
 		return ['fragment', columns ? 
 			[
 				['thead tr', (this.options.columns ? this.options.columns : selectedColumns).map(function(columnObj){
-					return ['th.sort', { name: columnObj.name }, columnObj.label ? columnObj.label : columnObj.name];
+					return ['th.sort', {name: columnObj.name}, columnObj.label ? columnObj.label : columnObj.name];
 				})],
 				['tbody', this.collection.map(function(model) {
 					return ['tr.data', { 'data-id': model.id }, selectedColumns.pluck('name').map(function(field){
@@ -58,23 +58,18 @@ App.View.Grid = Backbone.View.extend({
 		]
 	},
 	
-	sort: function(e){
-		//console.log('firing');
-		var that = this;
-		var thisEl = $(e.srcElement);
-		var sortSet = thisEl.attr('data-sort');
-		//console.log(sortSet);
-		var sort = sortSet == 'desc' || !sortSet ? 'asc' : 'desc';
-		var fieldName = thisEl.attr('name');
-		this.collection.fetch({ data: $.param({ sort: '{ "{0}": "{1}" }'.supplant([fieldName, sort]) }), success: function(){
-			that.render();
-			$('th', that.el).attr('data-sort', null);
-			$('th[name="{0}"]'.supplant([fieldName], that.el)).attr('data-sort', sort).append(create(
-				['fragment', [
-					(sort == 'asc') ? ['i.icon-chevron-up'] : ['i.icon-chevron-down']
-				]]
-			));			
-		}  });
+	sort: function(e) {
+		var sortSet = $(e.target).attr('data-sort');
+		var sort = ((sortSet == 'desc') || (!sortSet)) ? 'asc' : 'desc';
+		var fieldName = $(e.target).attr('name');
+		var models = this.collection.models;
+		models = _.sortBy(models, function(model) {
+			return model.get(fieldName);
+		});
+		if (sort == 'desc') models.reverse();
+		this.collection.reset(models);
+		this.render();
+		$(this.el).find('th[name="' + fieldName + '"]').attr('data-sort', sort);
 	},
 	
 	rowClick: function(e){

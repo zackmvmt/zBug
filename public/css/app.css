@@ -58,6 +58,7 @@ table.grid th {
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 10px;
   color: #ccc;
+  cursor: pointer;
 }
 table.grid tbody tr {
   cursor: pointer;
@@ -110,22 +111,29 @@ table.grid td .indicator.status_regress {
 .header ul.nav li.tre:hover {
   color: #99cc14;
 }
+.list {
+  position: relative;
+}
 .list .list_sort {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
   height: 40px;
 }
 .list .list_sort label {
   float: left;
   width: 70px;
+  margin-bottom: 20px;
 }
 .list .list_sort select {
   float: left;
   width: 90px;
   margin-right: 20px;
 }
-.list .list_sort .search {
-  float: right;
-  margin-top: 0;
+.list .list_search {
+  position: absolute;
+  top: -3px;
+  right: 0;
+}
+.list .list_search .search {
   width: 220px;
   text-align: right;
 }
