@@ -105,6 +105,21 @@ app.get('/bugs', function(req, res) {
 		} else { re.send({ status: 'error', body: 'an error occured with the lookup' }); }
 	});
 });
+// get all the projects
+app.get('/projects', function(req, res) {
+	var projs = [];
+	db.view('projects', 'all', function(err, body) {
+		if (!err) {
+			body.rows.forEach(function(doc) {
+				var temp = doc.value;
+				temp.id = doc.value._id;
+				delete temp._id;
+				projs.push(temp);
+			});
+			res.send(projs);
+		} else { re.send({ status: 'error', body: 'an error occured with the lookup' }); }
+	});
+});
 
 
 // PUT ROUTES

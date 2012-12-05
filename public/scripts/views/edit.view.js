@@ -68,6 +68,7 @@ App.View.Edit = Backbone.View.extend({
 	loadFields: function() {
 		var that = this;
 		var fields = [
+			{ name: 'project', key: 'project', values: this.options.projects },
 			{ name: 'type', key: 'bug_type', values: ['copy', 'images', 'front_end', 'back_end', 'unknown'] },
 			{ name: 'severity', key: 'severity', values: [0, 1, 2, 3, 4, 5] },
 			{ name: 'browser', key: 'browser', values: ['chrome', 'firefox', 'safari', 'internet_explorer'] }
@@ -114,6 +115,7 @@ App.View.Edit = Backbone.View.extend({
 		var step = $(this.el).find('.add_step').val();
 		if (step != '') {
 			var steps = this.model.get('steps');
+			if (!steps) var steps = [];
 			steps.push(step);
 			this.model.set({ steps: steps });
 			this.render();

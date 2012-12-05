@@ -1,17 +1,22 @@
 App.View.Dashboard = Backbone.View.extend({
 
 	className: 'app',
+	collection: new App.Collection.Project,
 
-	events:{},
-	
-	initialize: function() {},
+	initialize: function() {
+		var that = this;
+		this.collection.fetch({ success: function() {
+			that.render();
+		} })
+	},
 	
 	build: function() {
 		
 		var header = new App.View.Header;
-		var content = new App.View.Content;
+		var content = new App.View.Content({ projects: this.collection });
 		
 		header.forward(['addNew'], content);
+		var app = this;
 		
 		content.bind('addNew', function() {
 			var d = new Date();
@@ -40,7 +45,8 @@ App.View.Dashboard = Backbone.View.extend({
 			this.collection.add(newBug);
 			var that = this;
 			this.display = new App.View.Edit({
-				model: newBug
+				model: newBug,
+				projects: app.collection.pluck('name')
 			})
 			.bind('back', function() {
 				that.display = null;

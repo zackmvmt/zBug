@@ -13,17 +13,26 @@ App.View.Content = Backbone.View.extend({
 	build: function() {
 	
 		var that = this;
+		var projects = [];
+		
+		if (this.options.projects) {
+			var projects = this.options.projects.pluck('name');
+			projects.unshift('all');
+		}
 		
 		var sort = new App.View.Sort({
 			fields: [
-				{ name: 'project', key: 'project', values: ['all', 'zBug'] },
+				{ name: 'project', key: 'project', values: projects },
 				{ name: 'status', key: 'status', values: ['all', 'open', 'regress', 'fixed'] },
 				{ name: 'type', key: 'bug_type', values: ['all', 'copy', 'images', 'front_end', 'back_end', 'unknown'] },
 				{ name: 'severity', key: 'severity', values: ['all', 1, 2, 3, 4, 5] }
 			]
 		});
 		
-		var search = new App.View.Search;
+		var search = new App.View.Search({
+			collection: this.collection,
+			fields: ['summary']
+		});
 		
 		var grid = new App.View.Grid({
 			collection: this.collection,
@@ -37,7 +46,8 @@ App.View.Content = Backbone.View.extend({
 		.bind('rowClick', function(e){
 			var displayModel = e[0];
 			that.display = new App.View.Edit({
-				model: displayModel
+				model: displayModel,
+				projects: that.options.projects.pluck('name')
 			})
 			.bind('back', function() {
 				that.display = null;
@@ -60,6 +70,7 @@ App.View.Content = Backbone.View.extend({
 			} });
 		});
 		
+		search.forward(['render'], grid);
 		sort.forward(['updateGrid'], grid);
 		
 		return (this.display) ? this.display : ['.list', [sort, search, grid]];
