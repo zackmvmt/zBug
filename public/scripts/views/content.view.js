@@ -67,6 +67,7 @@ App.View.Content = Backbone.View.extend({
 		
 	},
 	
+	// load the fields in the right order. if they have one selected, make sure it stays that way
 	loadFields: function() {
 	
 		var that = this;
@@ -83,9 +84,6 @@ App.View.Content = Backbone.View.extend({
 			{ name: 'type', key: 'bug_type', values: ['all', 'copy', 'images', 'front_end', 'back_end', 'unknown'] },
 			{ name: 'severity', key: 'severity', values: ['all', 1, 2, 3, 4, 5] }
 		];
-	
-		console.log('this.fields', this.fields);
-		console.log('pluck', (_.isEmpty(this.fields)) ? 'empty' : this.fields.pluck('field'));
 	
 		var result = defaultFields.map(function(field) {
 			// if the field is in the list of fields
