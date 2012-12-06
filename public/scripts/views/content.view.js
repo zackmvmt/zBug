@@ -5,6 +5,7 @@ App.View.Content = Backbone.View.extend({
 	
 	initialize: function() {
 		var that = this;
+		this.fields = {}; // stores the current fields for sorting
 		this.collection.fetch({ success: function() {
 			that.render();
 		} });
@@ -12,22 +13,10 @@ App.View.Content = Backbone.View.extend({
 	
 	build: function() {
 	
+		var app = this;
 		var that = this;
-		var projects = [];
 		
-		if (this.options.projects) {
-			var projects = this.options.projects.pluck('name');
-			projects.unshift('all');
-		}
-		
-		var sort = new App.View.Sort({
-			fields: [
-				{ name: 'project', key: 'project', values: projects },
-				{ name: 'status', key: 'status', values: ['all', 'open', 'regress', 'fixed'] },
-				{ name: 'type', key: 'bug_type', values: ['all', 'copy', 'images', 'front_end', 'back_end', 'unknown'] },
-				{ name: 'severity', key: 'severity', values: ['all', 1, 2, 3, 4, 5] }
-			]
-		});
+		var sort = new App.View.Sort({ fields: this.loadFields() });
 		
 		var search = new App.View.Search({
 			collection: this.collection,
@@ -56,6 +45,7 @@ App.View.Content = Backbone.View.extend({
 			that.render();
 		})
 		.bind('updateGrid', function(fields) {
+			app.fields = fields;
 			var that = this;
 			this.collection.fetch({ success: function() {
 				if (fields.length > 0) {
@@ -74,6 +64,43 @@ App.View.Content = Backbone.View.extend({
 		sort.forward(['updateGrid'], grid);
 		
 		return (this.display) ? this.display : ['.list', [sort, search, grid]];
+		
+	},
+	
+	loadFields: function() {
+	
+		var that = this;
+		var projects = [];
+		
+		if (this.options.projects) {
+			var projects = this.options.projects.pluck('name');
+			projects.unshift('all');
+		}
+		
+		var defaultFields = [
+			{ name: 'project', key: 'project', values: projects },
+			{ name: 'status', key: 'status', values: ['all', 'open', 'regress', 'fixed'] },
+			{ name: 'type', key: 'bug_type', values: ['all', 'copy', 'images', 'front_end', 'back_end', 'unknown'] },
+			{ name: 'severity', key: 'severity', values: ['all', 1, 2, 3, 4, 5] }
+		];
+	
+		console.log('this.fields', this.fields);
+		console.log('pluck', (_.isEmpty(this.fields)) ? 'empty' : this.fields.pluck('field'));
+	
+		var result = defaultFields.map(function(field) {
+			// if the field is in the list of fields
+			if (!_.isEmpty(that.fields) && _.contains(that.fields.pluck('field'), field.name)) {
+				// get the value out of the current field values
+				var selectedField = that.fields.find(function(tempField) {
+					return tempField.field == field.name;
+				});
+				// put in front of the others
+				field.values = _.flatten([selectedField.value, _.without(field.values, selectedField.value)])
+			}
+			return field;
+		});
+		
+		return result;
 		
 	}
 	

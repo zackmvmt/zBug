@@ -51,7 +51,7 @@ App.View.Grid = Backbone.View.extend({
 					return ['tr.data', { 'data-id': model.id }, selectedColumns.pluck('name').map(function(field){
 						elementToBuild = elementsToBuild ? elementsToBuild.findByProperty('name', field) : null;
 						return elementToBuild ? ['td', [elementToBuild.buildFunction(model)]] : 
-							field == 'status' ? ['td', [model.get(field), ['.indicator.status_' + model.get(field)]]] : ['td', model.get(field)];
+							field == 'status' ? ['td', [model.get(field), ['.indicator.status_' + model.get(field)]]] : ['td', model.get(field).replace('_', ' ')];
 					})];
 				})]
 			] : 'Empty Results'
